@@ -35,3 +35,6 @@ class Resource:
 
     def print_units(self):
         logging.debug("The units of resources are {}".format(self.units))
+        
+        
+        
