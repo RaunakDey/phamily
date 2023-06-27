@@ -115,6 +115,16 @@ class Connect:
             } 
             if name == 'infec-and-lysis':
                 adsorption_rate = parameters['adsorption_rate']
+                value = -adsorption_rate*source.value*target.value
+            else:
+                raise NameError('wrong name of function')
+            
+        elif source.type == 'free_virus' and target.type == 'susceptible':
+            default_parameters = {
+                'adsorption_rate' : 1e-10,
+            } 
+            if name == 'infec-and-lysis':
+                adsorption_rate = parameters['adsorption_rate']
                 value = adsorption_rate*source.value*target.value
             else:
                 raise NameError('wrong name of function')
@@ -126,4 +136,9 @@ class Connect:
                 )
             )
         return value   
+    
+    def add_connections(self):
+        raise NotImplemented
+    
+    
       
