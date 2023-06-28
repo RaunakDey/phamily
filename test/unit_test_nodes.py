@@ -1,9 +1,10 @@
 import logging
 import sys
 
-sys.path.append('./../src/')
+sys.path.append('./../phamily/')
 
 from nodes import Node, Connect
+#from phamily import Node, Connect
 
 # Set up logging configuration
 logging.basicConfig(level=logging.DEBUG)
