@@ -15,12 +15,16 @@ class Node:
     '''
     creates new ids for new nodes.
     '''
+    # Separate list to keep track of all node instances
+    instances = []
+
     def __post_init__(self):
         ### add list of nodes above this
         if self.type not in ['susceptible', 'free_virus', 'nutrients']:
             raise ValueError("Invalid Node type")
         Node._id_counter += 1
         self.id = Node._id_counter
+        self.__class__.instances.append(self)
 
 
 @dataclass
