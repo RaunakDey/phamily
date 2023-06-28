@@ -113,7 +113,8 @@ class Connect:
             default_parameters = {
                 'adsorption_rate' : 1e-10,
             } 
-            if name == 'infec-and-lysis':
+            parameters = {**default_parameters, **parameters}
+            if name == 'infect-and-lysis':
                 adsorption_rate = parameters['adsorption_rate']
                 value = -adsorption_rate*source.value*target.value
             else:
@@ -122,10 +123,13 @@ class Connect:
         elif source.type == 'free_virus' and target.type == 'susceptible':
             default_parameters = {
                 'adsorption_rate' : 1e-10,
+                'burst_size' : 100
             } 
-            if name == 'infec-and-lysis':
+            parameters = {**default_parameters, **parameters}
+            if name == 'infect-and-lysis':
                 adsorption_rate = parameters['adsorption_rate']
-                value = adsorption_rate*source.value*target.value
+                burst_size = parameters['burst_size']
+                value = burst_size*adsorption_rate*source.value*target.value
             else:
                 raise NameError('wrong name of function')
         
