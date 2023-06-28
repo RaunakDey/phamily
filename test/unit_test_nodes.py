@@ -27,10 +27,18 @@ connection3.connections(name='infect-and-lysis' )
 connection4 = Connect(lambda_virus,ecoli)
 connection4.connections(name='infect-and-lysis')
 
-## integration step
 
-def differential_equation(state,t):
-    value = 
+# Collect the values of all Node instances
+node_values = [node.value for node in Node.instances]
+values_array = np.array(node_values)
+
+## integration step
+def differential_equation(t,y):
+    '''t is a scalar and y is an ndarray with len(y) = y0 and function 
+    returns  an array of the same shape as y'''
+    dydt = y*t
+    return dydt
+
 
 # Set up initial conditions
 initial_conditions = [agar.value, ecoli.value, lambda_virus.value]
@@ -42,4 +50,5 @@ num_time_points = 1000
 t = np.linspace(start_time, end_time, num_time_points)
 
 # Solve the differential equations
-solution = odeint(differential_equations, initial_conditions, t)
+solution = odeint(differential_equation, initial_conditions, t)
+print(solution)
