@@ -11,6 +11,7 @@ class Node:
     value: float = None
     id: int = None
     _id_counter: int = 0
+    connections = {}
     
     '''
     creates new ids for new nodes.
@@ -20,10 +21,12 @@ class Node:
 
     def __post_init__(self):
         ### add list of nodes above this
+        # Keeping track of node serial numbers
         if self.type not in ['susceptible', 'free_virus', 'nutrients']:
             raise ValueError("Invalid Node type")
         Node._id_counter += 1
         self.id = Node._id_counter
+        # keeping a collection of instances for these nodes.
         self.__class__.instances.append(self)
 
 
@@ -32,6 +35,8 @@ class Connect:
     source: Node = None
     target: Node = None
     parameters_mega_list: dict = None
+    instances = []
+    connection_value: float = None
     
     '''
     if there is no target, it selects the source as the target 
@@ -39,6 +44,10 @@ class Connect:
     
     def __post_init__(self):
         self.target = self.source if self.target is None else self.target
+        # keeping a collection of instances for these edges.
+        self.__class__.instances.append(self)
+        #self.source.connections.setdefault(self.source, []).append(self)
+        self.source.connections.setdefault(id(self.source), []).append(self)
 
     def connections(self, name: str):
         source = self.source
@@ -50,9 +59,9 @@ class Connect:
         
         if source.type == 'nutrients' and target.type == 'susceptible':
             default_parameters = {
-                'linear_model_mult_constant': 1,
+                'linear_model_mult_constant': 0.1,
                 'half_conc': 1,
-                'monod_mult_constant': 1
+                'monod_mult_constant': 0.1
             }
             parameters = {**default_parameters, **parameters}
 
@@ -143,7 +152,8 @@ class Connect:
                     name, source.type, target.type, parameters, value
                 )
             )
-        return value   
+        return value
+        self.connection_value = value
     
     def add_connections(self):
         raise NotImplemented
