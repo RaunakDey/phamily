@@ -3,11 +3,14 @@ import sys
 from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
-
+### This needs to be corrected.
 sys.path.append('./../phamily/')
-#from ..phamily.utils_func import solve_network 
 
+#More imports
+from utils_func import solve_network
 from nodes import Node, Connect
+
+
 #from phamily import Node, Connect
 
 # Set up logging configuration  
@@ -48,35 +51,6 @@ time = np.arange(0, 10.1, 0.1)
 
 
 
-### function  -- to be moved
-
-def solve_network(
-    t: any,
-    initial_values: any
-    ) -> None:
-    '''
-    time: solution timescales
-    initial_values: initial values of all the nodes in the phamily network.
-    '''
-    # Define the system of differential equations
-    def system(y, t):
-        dydt = np.zeros(len(y))
-        for node in Node.instances:
-            for connect in node.connections.get(id(node), []):
-                dydt[node.id-1] -= connect.connection_value
-                dydt[connect.target.id-1] += connect.connection_value
-        return dydt
-    solution = odeint(system, initial_values, t)
-    # Print the solution
-    #for i, node in enumerate(Node.instances):
-    #    print(f"{node.name} values at t=0: {initial_values[i]}")
-    #    for j, time in enumerate(t):
-    #        print(f"{node.name} values at t={time}: {solution[j][i]}")
-    return solution
-
-
-
-
 #Solving
 solution = solve_network(time,initial_values)
 
@@ -86,13 +60,6 @@ plt.plot(time, solution[:, 0], 'b', label='agar(t)')
 plt.plot(time, solution[:, 1], 'g', label='ecoli(t)')
 plt.plot(time, solution[:, 2], 'g', label='lambda(t)')
 plt.show()
-'''
-# Update node values using connection values
-for node in Node.instances:
-    for connect in node.connections.get(id(node), []):
-        node.value -= connect.connection_value
 
-# Print updated node values
-for node in Node.instances:
-    print(f"{node.name} value: {node.value}")
-'''
+if __name__ == "__main__":
+    print('DOne')
