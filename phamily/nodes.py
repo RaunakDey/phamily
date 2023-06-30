@@ -67,7 +67,7 @@ class Connect:
 
             if name == 'self-growth':
                 value = 1
-            elif name == 'type-I':
+            elif name == 'type-I' or name is None:
                 linear_model_mult_constant = parameters['linear_model_mult_constant']
                 value = linear_model_mult_constant * self.source.value
             elif name == 'monod':
@@ -102,7 +102,7 @@ class Connect:
             }
             parameters = {**default_parameters, **parameters}
 
-            if name == 'self-growth':
+            if name == 'self-growth' or name is None:
                 growth_rate = parameters['growth_rate']
                 value = growth_rate*source.value
             elif name == 'logistic-growth':
@@ -127,7 +127,7 @@ class Connect:
                 'adsorption_rate' : 1e-10,
             } 
             parameters = {**default_parameters, **parameters}
-            if name == 'infect-and-lysis':
+            if name == 'infect-and-lysis' or name is None:
                 adsorption_rate = parameters['adsorption_rate']
                 value = -adsorption_rate*source.value*target.value
             else:
@@ -139,7 +139,7 @@ class Connect:
                 'burst_size' : 100
             } 
             parameters = {**default_parameters, **parameters}
-            if name == 'infect-and-lysis':
+            if name == 'infect-and-lysis' or name is None:
                 adsorption_rate = parameters['adsorption_rate']
                 burst_size = parameters['burst_size']
                 value = burst_size*adsorption_rate*source.value*target.value
@@ -155,8 +155,27 @@ class Connect:
         return value
         self.connection_value = value
     
-    def add_connections(self):
-        raise NotImplemented
+    
+    
+    # not tested.
+    @classmethod
+    def create_connections(cls):
+        connected_nodes = set([connect.source for connect in cls.instances] +
+                              [connect.target for connect in cls.instances if connect.target is not None])
+
+        unconnected_nodes = set(Node.instances) - connected_nodes
+
+        for i, source in enumerate(unconnected_nodes, start=1):
+            target = source  # Make a self-connection by default
+            connection_name = f"connection{i}"
+
+            connect = Connect(source, target)
+            setattr(connect, "name", connection_name)
+
+            logging.debug(f"Created connection '{connection_name}' between {source} and {target}")
+
+        return cls.instances
+    
     
     
       
