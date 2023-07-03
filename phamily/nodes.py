@@ -9,6 +9,9 @@ class Node:
     metadata: str = None
     units: str = None
     value: float = None
+    multiple_compartments: bool = False
+    latent : bool = False
+    number_of_latent_variables: int = 10
     id: int = None
     _id_counter: int = 0
     connections = {}
@@ -22,18 +25,43 @@ class Node:
     def __post_init__(self):
         ### add list of nodes above this
         # Keeping track of node serial numbers
-        if self.type not in ['susceptible', 'free_virus', 'nutrients']:
+        if self.type not in ['susceptible', 'free_virus', 'nutrients','exposed']:
             raise ValueError("Invalid Node type")
+        
         Node._id_counter += 1
         self.id = Node._id_counter
+        
+        
+        
+        # Dealing with latent nodes
+        if self.multiple_compartments:
+            #latent_nodes = []
+            for i in range(1, self.number_of_latent_variables):
+                new_node = Node(
+                    type=self.type,
+                    name=f"{self.name}{self.id}_{i}",
+                    metadata=self.metadata, 
+                    units=self.units,
+                    value=self.value,
+                    multiple_compartments =  False,
+                    latent = True
+                )
+                #latent_nodes.append(new_node)
+            #self.__class__.instances.extend(latent_nodes)
+            
         # keeping a collection of instances for these nodes.
         self.__class__.instances.append(self)
+        
+        
+    def __str__(self):
+        return f"Node(type={self.type}, name={self.name}, value = {self.value}, latent = {self.latent})"
 
 
 @dataclass
 class Connect:
     source: Node = None
     target: Node = None
+    other_helper : Node = None
     parameters_mega_list: dict = None
     instances = []
     connection_value: float = None
@@ -78,7 +106,7 @@ class Connect:
                 raise NameError('wrong name of function')
             
         
-        elif source.type == 'nutrients' and target.type == 'nutrients':
+        elif source.type == 'nutrients' and target.type == 'outside':
             default_parameters = {'inflow_rate' : 1,'outflow_rate' : 1,'flux' : 1}
             parameters = {**default_parameters,**parameters}
             if name == 'media-inflow':
@@ -124,7 +152,7 @@ class Connect:
         
         elif source.type == 'susceptible' and target.type == 'free_virus':
             default_parameters = {
-                'adsorption_rate' : 1e-10,
+                'adsorption_rate' : 1e-8,
             } 
             parameters = {**default_parameters, **parameters}
             if name == 'infect-and-lysis' or name is None:
@@ -135,8 +163,8 @@ class Connect:
             
         elif source.type == 'free_virus' and target.type == 'susceptible':
             default_parameters = {
-                'adsorption_rate' : 1e-10,
-                'burst_size' : 100
+                'adsorption_rate' : 1e-8,
+                'burst_size' : 300
             } 
             parameters = {**default_parameters, **parameters}
             if name == 'infect-and-lysis' or name is None:
@@ -145,7 +173,25 @@ class Connect:
                 value = burst_size*adsorption_rate*source.value*target.value
             else:
                 raise NameError('wrong name of function')
+            
+        elif source.type == 'susceptible' and target.type == 'exposed' and self.other_helper == 'free_virus':
+            default_parameters = {
+                'number_of_compartments' : 10,
+                'rate_of_tranfer': 0.1,
+                'adsorption_rate' : 1e-10
+            }
+            parameters = {**default_parameters, **parameters}
+            if name == 'new-infection' or name is None:
+                number_of_compartments = parameters['number_of_compartments']
+                rate_of_transfer = parameters['rate_if_tranfer']
+                adsorption_rate = parameters['adsorption_rate']
+                value = -adsorption_rate*source.value*self.other_helper.value
+            else:
+                raise NameError('wrong name of function')
         
+        
+                
+                
         ### Just add lines above this
         logging.debug(
                 "The value returned by the {} function between {} and {} for the parameters {} is {}".format(
