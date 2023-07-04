@@ -18,10 +18,10 @@ logging.basicConfig(level=logging.WARNING)
 
     
     
-agar = Node('nutrients', 'agar', value=12e5)
+#agar = Node('nutrients', 'agar', value=12e5)
 ecoli = Node('susceptible', 'ecoli', value=1e4)
 lambda_virus = Node('free_virus','lambda',value= 1e8)
-exposed = Node('exposed','e-coli',multiple_compartments=True,value = 0,number_of_latent_variables=3)
+exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=3)
 
 # Print updated node values
 for node in Node.instances:
@@ -32,13 +32,13 @@ for node in Node.instances:
     
 #Connect.create_connections()
 
-connection1 = Connect(agar,ecoli)
-connection1.connection_value = connection1.connections(name='type-I')
+#connection1 = Connect(agar,ecoli)
+#connection1.connection_value = connection1.connections(name='type-I')
 
-connection2 = Connect(ecoli)
+connection2 = Connect(ecoli,parameters_mega_list={(ecoli.type,ecoli.type):{'growth_rate':0.1, 'linear_model_mult_constant': 0.1}})
 connection2.connection_value = connection2.connections(name = 'type-I' )
 
-connection3 = Connect(ecoli,lambda_virus)
+connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-8}})
 connection3.connection_value = connection3.connections(name='infect-and-lysis' )
 
 connection4 = Connect(lambda_virus,ecoli)
@@ -59,12 +59,18 @@ time = np.arange(0, 10.1, 0.1)
 
 #Solving
 solution = solve_network(time,initial_values)
-print(solution[:,2])
+
+
+for node in Node.instances:
+    for connect in node.connections.get(id(node), []):
+        #print(node.id -1)
+        print(f"the source id is {connect.source.id} and the target id is {connect.target.id} and the value of the function is {connect.connection_value}" )       
+
 #plotting
 
 
-plt.plot(time, solution[:, 1], 'g', label='ecoli(t)')
-plt.plot(time, solution[:, 2], 'b', label='lambda(t)')
+plt.plot(time, solution[:, 0], 'g', label='ecoli(t)')
+plt.plot(time, solution[:, 1], 'b', label='lambda(t)')
 plt.yscale('log')
 plt.show()
 

@@ -25,7 +25,7 @@ class Node:
     def __post_init__(self):
         ### add list of nodes above this
         # Keeping track of node serial numbers
-        if self.type not in ['susceptible', 'free_virus', 'nutrients','exposed']:
+        if self.type not in ['susceptible', 'free_virus', 'nutrients','exposed','outside']:
             raise ValueError("Invalid Node type")
         
         Node._id_counter += 1
@@ -39,7 +39,7 @@ class Node:
             for i in range(1, self.number_of_latent_variables):
                 new_node = Node(
                     type=self.type,
-                    name=f"{self.name}{self.id}_{i}",
+                    name=f"{self.name}{self.id+i}",
                     metadata=self.metadata, 
                     units=self.units,
                     value=self.value,
@@ -54,7 +54,7 @@ class Node:
         
         
     def __str__(self):
-        return f"Node(type={self.type}, name={self.name}, value = {self.value}, latent = {self.latent})"
+        return f"Node(type={self.type}, name={self.name}, value = {self.value}, latent = {self.latent}, id = {self.id})"
 
 
 @dataclass
@@ -76,18 +76,20 @@ class Connect:
         self.__class__.instances.append(self)
         #self.source.connections.setdefault(self.source, []).append(self)
         self.source.connections.setdefault(id(self.source), []).append(self)
+        if self.parameters_mega_list is None:
+            self.parameters_mega_list = {}  # Set an empty dictionary as the default value
 
     def connections(self, name: str):
         source = self.source
         target = self.target if self.target is not None else self.source
         key = (source.type, target.type)
-        parameters = self.parameters_mega_list.get(key, {}) if self.parameters_mega_list else {}
-
+        #parameters = self.parameters_mega_list.get(key, {}) if self.parameters_mega_list is not None else {}
+        parameters = self.parameters_mega_list.get(key, {})
         #### Can use mapping and lambda function to optimize this
         
         if source.type == 'nutrients' and target.type == 'susceptible':
             default_parameters = {
-                'linear_model_mult_constant': 0.1,
+                'linear_model_mult_constant': 0.5,
                 'half_conc': 1,
                 'monod_mult_constant': 0.1
             }
@@ -122,14 +124,14 @@ class Connect:
         elif source.type == 'susceptible' and target.type == 'susceptible':
             default_parameters = {
                 'growth_rate' : 1,
-                'linear_model_mult_constant': 1,
+                'linear_model_mult_constant': 0.5,
                 'half_conc': 1,
                 'monod_mult_constant': 1,
                 'carrying_cap' : 1e4,
                 'outflow_rate' : 1
             }
             parameters = {**default_parameters, **parameters}
-
+            logging.warning("The parameters used are {}".format(parameters))
             if name == 'self-growth' or name is None:
                 growth_rate = parameters['growth_rate']
                 value = growth_rate*source.value
@@ -152,9 +154,10 @@ class Connect:
         
         elif source.type == 'susceptible' and target.type == 'free_virus':
             default_parameters = {
-                'adsorption_rate' : 1e-8,
+                'adsorption_rate' : 1.5e-8,
             } 
             parameters = {**default_parameters, **parameters}
+            logging.warning("The parameters used are {}".format(parameters))
             if name == 'infect-and-lysis' or name is None:
                 adsorption_rate = parameters['adsorption_rate']
                 value = -adsorption_rate*source.value*target.value
@@ -163,8 +166,8 @@ class Connect:
             
         elif source.type == 'free_virus' and target.type == 'susceptible':
             default_parameters = {
-                'adsorption_rate' : 1e-8,
-                'burst_size' : 300
+                'adsorption_rate' : 1.5e-8,
+                'burst_size' : 350
             } 
             parameters = {**default_parameters, **parameters}
             if name == 'infect-and-lysis' or name is None:
