@@ -19,8 +19,8 @@ logging.basicConfig(level=logging.WARNING)
     
     
 #agar = Node('nutrients', 'agar', value=12e5)
-ecoli = Node('susceptible', 'ecoli', value=1e4)
-lambda_virus = Node('free_virus','lambda',value= 1e8)
+ecoli = Node('susceptible', 'ecoli', value=1e8)
+lambda_virus = Node('free_virus','lambda',value= 1e7)
 exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=3)
 
 # Print updated node values
@@ -35,10 +35,10 @@ for node in Node.instances:
 #connection1 = Connect(agar,ecoli)
 #connection1.connection_value = connection1.connections(name='type-I')
 
-connection2 = Connect(ecoli,parameters_mega_list={(ecoli.type,ecoli.type):{'growth_rate':0.1, 'linear_model_mult_constant': 0.1}})
+connection2 = Connect(ecoli,parameters_mega_list={(ecoli.type,ecoli.type):{'growth_rate':0.2, 'linear_model_mult_constant': 0.2}})
 connection2.connection_value = connection2.connections(name = 'type-I' )
 
-connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-8}})
+connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-13}})
 connection3.connection_value = connection3.connections(name='infect-and-lysis' )
 
 connection4 = Connect(lambda_virus,ecoli)
