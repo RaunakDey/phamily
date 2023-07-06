@@ -211,7 +211,7 @@ class Connect:
     def transfers(self,name):
         parameters = self.parameters_mega_list
         linear_rate = parameters.get('linear-transfer-rate')
-        if name == 'linear-transfer-forward' or name is None:
+        if name == 'linear-transfer-forward' or name is None:    
             value = -linear_rate*self.source.value
         elif name == 'linear-transfer-backward':
             value = +linear_rate*self.target.value

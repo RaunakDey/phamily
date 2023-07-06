@@ -3,6 +3,8 @@ import sys
 from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
+
+
 ### This needs to be corrected.
 sys.path.append('./../phamily/')
 
@@ -21,9 +23,9 @@ logging.basicConfig(level=logging.WARNING)
 #agar = Node('nutrients', 'agar', value=12e5)
 ecoli = Node('susceptible', 'ecoli', value=1e8)
 lambda_virus = Node('free_virus','lambda',value= 1e7)
-exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=10)
+#exposed = Node('exposed','exposed-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=5)
 
-connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
+#connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
 
 # Print updated node values
 for node in Node.instances:
@@ -60,6 +62,27 @@ initial_values = [node.value for node in Node.instances]
 
 # Time points
 time = np.arange(0, 10.1, 0.1)
+dt = time[1] - time[0]
+
+
+### test a few stuff
+'''
+dydt = np.zeros(len(initial_values))
+for node in Node.instances:
+    for connect in node.connections.get(id(node), []):            
+        dydt[node.id-1] += connect.connection_value
+        print('dydt vector is {}'.format(dydt))
+    node.value +=  dydt[node.id-1] * dt
+    print(node.value)
+    
+
+for node in Node.instances:
+    for connect in node.connections.get(id(node), []):            
+        dydt[node.id-1] += connect.connection_value
+        print('dydt vector second time is {}'.format(dydt))
+'''
+
+
 
 
 
@@ -85,3 +108,5 @@ plt.show()
 
 if __name__ == "__main__":
     print('Done. (C) Raunak Dey, Weitz Group.')
+    print(f'The value of ecoli node is {ecoli.value}')
+
