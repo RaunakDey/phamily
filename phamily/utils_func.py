@@ -37,22 +37,32 @@ def solve_network(
 
 
 
-def connect_multi_compartment(list_of_nodes,type_of_transfer,parameters_input_list = None):
+def connect_multi_compartment(the_first_node,Node,type_of_transfer,parameters_input_list = None):
     '''
     Call the first node id
     '''
-    if list_of_nodes[0].multiple_compartments == False:
+    if the_first_node.multiple_compartments == False:
         raise TypeError('wrong type of compartment, can not connect when there is only one compartment present.')
     
-    id_start = list_of_nodes[0].id
+    
+    number_of_nodes = the_first_node.number_of_latent_variables
+    id_start = the_first_node.id
     default_parameters = {
             'linear-transfer-rate' : 10,
         }
     if parameters_input_list is None:
         parameters_input_list = {}
     new_parameters = {key: parameters_input_list.get(key, default_parameters[key]) for key in default_parameters}
+    
+    list_of_nodes = []
+    list_of_nodes.append(the_first_node)
+    for node in Node.instances:
+        if node.id > the_first_node.id and node.id < the_first_node.id + the_first_node.number_of_latent_variables:
+            list_of_nodes.append(node)
+        logging.warning(f'The nodes are list {node.name}')
+    
     if type_of_transfer == 'linear':
-        for i in range(0,len(list_of_nodes)-1):
+        for i in range(0,number_of_nodes-1):
             connect_two_nodes = Connect(list_of_nodes[i],list_of_nodes[i+1],parameters_mega_list=new_parameters)
             value_of_the_function = connect_two_nodes.transfers(name='linear-transfer-forward')
             setattr(connect_two_nodes,'connection_value',value_of_the_function)

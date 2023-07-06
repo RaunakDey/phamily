@@ -21,9 +21,9 @@ logging.basicConfig(level=logging.WARNING)
 #agar = Node('nutrients', 'agar', value=12e5)
 ecoli = Node('susceptible', 'ecoli', value=1e8)
 lambda_virus = Node('free_virus','lambda',value= 1e7)
-exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=3)
+exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=10)
 
-
+connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
 
 # Print updated node values
 for node in Node.instances:
@@ -40,15 +40,16 @@ for node in Node.instances:
 connection2 = Connect(ecoli,parameters_mega_list={(ecoli.type,ecoli.type):{'growth_rate':0.2, 'linear_model_mult_constant': 0.2}})
 connection2.connection_value = connection2.connections(name = 'type-I' )
 
-connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-13}})
-connection3.connection_value = connection3.connections(name='infect-and-lysis' )
+#connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-13}})
+#connection3.connection_value = connection3.connections(name='infect-and-lysis' )
 
-connection4 = Connect(lambda_virus,ecoli)
-connection4.connection_value = connection4.connections(name='infect-and-lysis')
+#connection4 = Connect(lambda_virus,ecoli)
+#connection4.connection_value = connection4.connections(name='infect-and-lysis')
+
+#connection5 = Connect(ecoli,exposed,lambda_virus)
+#connection5.connection_value = connection5.connections(name='new-infection')
 
 
-
-connect_multi_compartment(list_of_nodes,type_of_transfer='linear',parameters_input_list = None)
 
 # Collect the values of all Node instances
 node_values = [node.value for node in Node.instances]
@@ -76,8 +77,11 @@ for node in Node.instances:
 
 plt.plot(time, solution[:, 0], 'g', label='ecoli(t)')
 plt.plot(time, solution[:, 1], 'b', label='lambda(t)')
-plt.yscale('log')
+plt.plot(time, solution[:, 2], 'r', label='first exposed compartment (t)')
+plt.yscale('linear')
 plt.show()
 
+
+
 if __name__ == "__main__":
-    print('DOne')
+    print('Done. (C) Raunak Dey, Weitz Group.')

@@ -179,7 +179,7 @@ class Connect:
             else:
                 raise NameError('wrong name of function')
             
-        elif source.type == 'susceptible' and target.type == 'exposed' and self.other_helper == 'free_virus':
+        elif source.type == 'susceptible' and target.type == 'exposed' and self.other_helper.type == 'free_virus':
             default_parameters = {
                 'number_of_compartments' : 10,
                 'rate_of_tranfer': 0.1,
@@ -188,16 +188,17 @@ class Connect:
             parameters = {**default_parameters, **parameters}
             if name == 'new-infection' or name is None:
                 number_of_compartments = parameters['number_of_compartments']
-                rate_of_transfer = parameters['rate_if_tranfer']
+                rate_of_transfer = parameters['rate_of_tranfer']
                 adsorption_rate = parameters['adsorption_rate']
                 value = -adsorption_rate*source.value*self.other_helper.value
             else:
                 raise NameError('wrong name of function')
+            logging.warning(f'The value is {value}')
         
-        
+    
                 
                 
-        ### Just add lines above this
+        ## Just add lines above this
         logging.debug(
                 "The value returned by the {} function between {} and {} for the parameters {} is {}".format(
                     name, source.type, target.type, parameters, value
