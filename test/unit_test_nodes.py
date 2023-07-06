@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 sys.path.append('./../phamily/')
 
 #More imports
-from utils_func import solve_network
+from utils_func import solve_network, connect_multi_compartment
 from nodes import Node, Connect
 
 
@@ -23,12 +23,14 @@ ecoli = Node('susceptible', 'ecoli', value=1e8)
 lambda_virus = Node('free_virus','lambda',value= 1e7)
 exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=3)
 
+
+
 # Print updated node values
 for node in Node.instances:
     print(f"Before running stuff {node.name} value: {node.value}")
+    
 
-for node in Node.instances:
-    print(str(node))
+
     
 #Connect.create_connections()
 
@@ -44,6 +46,9 @@ connection3.connection_value = connection3.connections(name='infect-and-lysis' )
 connection4 = Connect(lambda_virus,ecoli)
 connection4.connection_value = connection4.connections(name='infect-and-lysis')
 
+
+
+connect_multi_compartment(list_of_nodes,type_of_transfer='linear',parameters_input_list = None)
 
 # Collect the values of all Node instances
 node_values = [node.value for node in Node.instances]

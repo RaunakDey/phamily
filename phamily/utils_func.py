@@ -37,7 +37,7 @@ def solve_network(
 
 
 
-def connect_multi_compartment(list_of_nodes,name,parameters_input_list = None):
+def connect_multi_compartment(list_of_nodes,type_of_transfer,parameters_input_list = None):
     '''
     Call the first node id
     '''
@@ -46,21 +46,27 @@ def connect_multi_compartment(list_of_nodes,name,parameters_input_list = None):
     
     id_start = list_of_nodes[0].id
     default_parameters = {
-            'rate_of_tranfer' : 10,
+            'linear-transfer-rate' : 10,
         }
     if parameters_input_list is None:
         parameters_input_list = {}
     new_parameters = {key: parameters_input_list.get(key, default_parameters[key]) for key in default_parameters}
-
-    for i in range(len(list_of_nodes)-1):
-        connect_two_nodes = Connect(list_of_nodes[i],list_of_nodes[i+1],parameters_mega_list=new_parameters)
-        value_of_the_function = connect_two_nodes.transfers(name='linear-transfer-forward')
-        setattr(connect_two_nodes,'connection_value',value_of_the_function)
-        
-        
-        connect_two_nodes_back = Connect(list_of_nodes[-1-i],list_of_nodes[-2-i])
-        value_of_the_function_back = connect_two_nodes.transfers(name='linear-transfer-backward')
-        setattr(connect_two_nodes_back,'connection_value',value_of_the_function_back)
+    if type_of_transfer == 'linear':
+        for i in range(0,len(list_of_nodes)-1):
+            connect_two_nodes = Connect(list_of_nodes[i],list_of_nodes[i+1],parameters_mega_list=new_parameters)
+            value_of_the_function = connect_two_nodes.transfers(name='linear-transfer-forward')
+            setattr(connect_two_nodes,'connection_value',value_of_the_function)
+            
+        for i in range(1,len(list_of_nodes)):    
+            connect_two_nodes_back = Connect(list_of_nodes[i],list_of_nodes[i-1])
+            value_of_the_function_back = connect_two_nodes.transfers(name='linear-transfer-backward')
+            setattr(connect_two_nodes_back,'connection_value',value_of_the_function_back)
+    elif type_of_transfer == 'exponential-decrease':
+        raise NotImplemented
+    elif type_of_transfer == 'exponential-increase':
+        raise NotImplemented
+    else:
+        raise NotImplemented
         
  
         

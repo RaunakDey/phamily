@@ -212,7 +212,7 @@ class Connect:
         linear_rate = parameters.get('linear-transfer-rate')
         if name == 'linear-transfer-forward' or name is None:
             value = -linear_rate*self.source.value
-        elif name == 'backward-transfer-forward':
+        elif name == 'linear-transfer-backward':
             value = +linear_rate*self.target.value
         elif name == 'exponential-decay':
             pass
