@@ -65,6 +65,7 @@ class Connect:
     parameters_mega_list: dict = None
     instances = []
     connection_value: float = None
+    name_of_func: str = None
     
     '''
     if there is no target, it selects the source as the target 
@@ -82,6 +83,7 @@ class Connect:
     
 
     def connections(self, name: str):
+        name = self.name_of_func if self.name_of_func is not None else name
         source = self.source
         target = self.target if self.target is not None else self.source
         key = (source.type, target.type)
@@ -206,6 +208,7 @@ class Connect:
             )
         return value
         self.connection_value = value
+        self.name_of_func = name
     
     
     def transfers(self,name):
@@ -221,7 +224,13 @@ class Connect:
             raise NameError('Undefined function. Please check the name of the function used.')
         return value
     
-    
+    def update_connection_value(self):
+        source = self.source
+        target = self.target
+        other_helper = self.other_helper
+        name_of_func_used = self.name_of_func
+        self.connection_value = self.connections(name=name_of_func_used)
+
     # not tested.
     @classmethod
     def create_connections(cls):
