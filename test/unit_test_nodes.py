@@ -14,16 +14,16 @@ from nodes import Node, Connect
 #from phamily import Node, Connect
 
 # Set up logging configuration  
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.ERROR)
 
     
     
 #agar = Node('nutrients', 'agar', value=12e5)
 ecoli = Node('susceptible', 'ecoli', value=1e8)
 lambda_virus = Node('free_virus','lambda',value= 1e7)
-exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=10)
+#exposed = Node('exposed','e-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=10)
 
-connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
+#connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
 
 # Print updated node values
 for node in Node.instances:
@@ -62,6 +62,39 @@ initial_values = [node.value for node in Node.instances]
 time = np.arange(0, 10.1, 0.1)
 
 
+# testing some stuff on local
+#print(f'the node value is before {node.value}')
+dt = time[1]-time[0]
+dydt = np.zeros(len(initial_values))
+for node in Node.instances:
+    for connect in node.connections.get(id(node), []):
+        connect.update_connection_value()
+        dydt[node.id-1] += connect.connection_value
+        print(f'the connection_value before is {connect.connection_value}')
+    node.value += dydt * dt
+    #print(f'the node value after is {node.value}')
+    #print(f'the dydt value before is {dydt}')
+    for connect in node.connections.get(id(node), []):
+        connect.update_connection_value()
+        dydt[node.id-1] += connect.connection_value[0]
+        print(f'the connection_value after is {connect.connection_value}')
+    node.value += dydt * dt
+    #print(f'the node value after is {node.value}')
+    for connect in node.connections.get(id(node), []):
+        connect.update_connection_value()
+        dydt[node.id-1] += connect.connection_value[0]
+        print(f'the connection_value after is {connect.connection_value}')
+    node.value += dydt * dt
+    #print(f'the node value after is {node.value}')
+
+
+
+
+
+
+
+'''
+
 
 #Solving
 solution = solve_network(time,initial_values)
@@ -81,6 +114,8 @@ plt.plot(time, solution[:, 2], 'r', label='first exposed compartment (t)')
 plt.yscale('linear')
 plt.show()
 
+
+'''
 
 
 if __name__ == "__main__":
