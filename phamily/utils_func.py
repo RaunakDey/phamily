@@ -25,7 +25,8 @@ def solve_network_euler(
             for connect in node.connections.get(id(node), []): 
                 ## I need to update these connections somehow???
                 connect.update_connection_value()
-                dydt[node.id-1] += connect.connection_value if isinstance(connect.connection_value,float) is True else connect.connection_value[0]
+                logging.error(f'Between {connect.source.name} and {connect.target.name} the value is {connect.connection_value}')
+                dydt[node.id-1] += connect.connection_value if isinstance(connect.connection_value,(float,int)) is True else connect.connection_value[0]
                 logging.debug(f" The node ids are {node.id - 1}")
                 logging.debug(f'the dy is {dydt[node.id-1]*dt} between source {connect.source.name} with id {connect.source.id} and target {connect.target.name}, id {connect.target.id}')
             node.value +=  dydt[node.id-1] * dt
@@ -97,11 +98,13 @@ def connect_multi_compartment(the_first_node,Node,type_of_transfer,parameters_in
             connect_two_nodes = Connect(list_of_nodes[i],list_of_nodes[i+1],parameters_mega_list=new_parameters)
             value_of_the_function = connect_two_nodes.transfers(name='linear-transfer-forward')
             setattr(connect_two_nodes,'connection_value',value_of_the_function)
+            setattr(connect_two_nodes,'name_of_func','linear-transfer-forward')
             
         for i in range(1,len(list_of_nodes)):    
             connect_two_nodes_back = Connect(list_of_nodes[i],list_of_nodes[i-1])
             value_of_the_function_back = connect_two_nodes.transfers(name='linear-transfer-backward')
             setattr(connect_two_nodes_back,'connection_value',value_of_the_function_back)
+            setattr(connect_two_nodes_back,'name_of_func','linear-transfer-backward')
     elif type_of_transfer == 'exponential-decrease':
         raise NotImplemented
     elif type_of_transfer == 'exponential-increase':

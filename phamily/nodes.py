@@ -202,11 +202,11 @@ class Connect:
                 
                 
         ## Just add lines above this
-        logging.debug(
-                "The value returned by the {} function between {} and {} for the parameters {} is {}".format(
-                    name, source.type, target.type, parameters, value
-                )
-            )
+        #logging.debug(
+        #        "The value returned by the {} function between {} and {} for the parameters {} is {}".format(
+        #            name, source.type, target.type, parameters, value
+        #        )
+        #    )
         return value
         self.connection_value = value
         self.name_of_func = name
@@ -224,13 +224,24 @@ class Connect:
         else:
             raise NameError('Undefined function. Please check the name of the function used.')
         return value
+        self.connection_value = value
+        self.name_of_func = name
     
     def update_connection_value(self):
         source = self.source
         target = self.target
         other_helper = self.other_helper
         name_of_func_used = self.name_of_func
-        self.connection_value = self.connections(name=name_of_func_used)
+        if source.latent is False or target.latent is False:
+            logging.error(f'source is {source.name}, target is {target.name}')
+            self.connection_value = self.connections(name=name_of_func_used)
+        # for the tranfer function I need to rewrite the last two lines, that if the nodes is multicompartments,
+        # then I would use the transfer function and name of the function to update this.
+        elif source.latent is True and target.latent is True:
+            self.connection_value = self.transfers(name=name_of_func_used)
+        else:
+            raise TypeError
+
 
     # not tested.
     @classmethod

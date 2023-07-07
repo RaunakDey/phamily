@@ -23,9 +23,8 @@ logging.basicConfig(level=logging.ERROR)
 #agar = Node('nutrients', 'agar', value=12e5)
 ecoli = Node('susceptible', 'ecoli', value=1e8)
 lambda_virus = Node('free_virus','lambda',value= 2e7)
-#exposed = Node('exposed','exposed-coli',multiple_compartments=True,latent=False,value = 0,number_of_latent_variables=5)
-
-#connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
+exposed = Node('exposed','exposed-coli',multiple_compartments=True,latent=True,value = 0,number_of_latent_variables=3)
+connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
 
 # Print updated node values
 for node in Node.instances:
@@ -71,42 +70,12 @@ print(solution[0,:])
 #print(f'Lambda time series is {lambda_virus.time_series}')
 plt.plot(time,solution[0,:],'g')
 plt.plot(time,solution[1,:],'b')
+#plt.plot(time,solution[2,:],'r')
 plt.yscale('log')
 plt.show()
 
 
-
-'''
-# testing some stuff on local
-#print(f'the node value is before {node.value}')
-dt = time[1]-time[0]
-dydt = np.zeros(len(initial_values))
-for node in Node.instances:
-    for connect in node.connections.get(id(node), []):
-        connect.update_connection_value()
-        dydt[node.id-1] += connect.connection_value
-        print(f'the connection_value before is {connect.connection_value}')
-        #print(isinstance(connect.connection_value,float))
-    node.value += dydt * dt
-    #print(f'the node value after is {node.value}')
-    #print(f'the dydt value before is {dydt}')
-    for connect in node.connections.get(id(node), []):
-        connect.update_connection_value()
-        dydt[node.id-1] += connect.connection_value[0]
-        print(f'the connection_value after is {connect.connection_value}')
-        #print(isinstance(connect.connection_value,float))
-    node.value += dydt * dt
-    #print(f'the node value after is {node.value}')
-    for connect in node.connections.get(id(node), []):
-        connect.update_connection_value()
-        dydt[node.id-1] += connect.connection_value[0]
-        print(f'the connection_value after is {connect.connection_value}')
-    node.value += dydt * dt
-    #print(f'the node value after is {node.value}')
-
-
-'''
-
+  
 
 
 
