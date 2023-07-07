@@ -13,18 +13,28 @@ def solve_network_euler(
     initial_values: initial values of all the nodes in the phamily network.
     '''
     dt = t[1]-t[0]
-    for count in range(len(t)):
-        dydt = np.zeros(len(initial_values))
+    solution = np.zeros([len(initial_values),len(t)])
+
+    for node in Node.instances:
+        node.time_series.append(initial_values[node.id-1])
+        solution[node.id-1,0] = initial_values[node.id-1]
+    
+    for count in range(len(t)-1):
         for node in Node.instances:
+            dydt = np.zeros(len(initial_values))
             for connect in node.connections.get(id(node), []): 
                 ## I need to update these connections somehow???
-                dydt[node.id-1] += connect.connection_value
+                connect.update_connection_value()
+                dydt[node.id-1] += connect.connection_value if isinstance(connect.connection_value,float) is True else connect.connection_value[0]
                 logging.debug(f" The node ids are {node.id - 1}")
-            node.value +=  dydt * dt
-        
-    
-   
-        
+                logging.debug(f'the dy is {dydt[node.id-1]*dt} between source {connect.source.name} with id {connect.source.id} and target {connect.target.name}, id {connect.target.id}')
+            node.value +=  dydt[node.id-1] * dt
+            solution[node.id-1,count+1] = node.value
+            logging.debug(f'The node {node.name} has value {node.value}')
+            #node.time_series.append(node.value)
+            logging.debug(f'The time series of {node.name} is {node.time_series}')
+
+    return solution
    
 
 

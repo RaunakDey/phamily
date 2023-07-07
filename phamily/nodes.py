@@ -15,6 +15,7 @@ class Node:
     id: int = None
     _id_counter: int = 0
     connections = {}
+    time_series = [] 
     
     '''
     creates new ids for new nodes.
@@ -158,7 +159,7 @@ class Connect:
         
         elif source.type == 'susceptible' and target.type == 'free_virus':
             default_parameters = {
-                'adsorption_rate' : 1.5e-8,
+                'adsorption_rate' : 1.4e-13,
             } 
             parameters = {**default_parameters, **parameters}
             logging.warning("The parameters used are {}".format(parameters))
@@ -170,7 +171,7 @@ class Connect:
             
         elif source.type == 'free_virus' and target.type == 'susceptible':
             default_parameters = {
-                'adsorption_rate' : 1.5e-8,
+                'adsorption_rate' : 1.4e-13,
                 'burst_size' : 350
             } 
             parameters = {**default_parameters, **parameters}
