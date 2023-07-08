@@ -47,6 +47,7 @@ class Node:
                     multiple_compartments =  False,
                     latent = True
                 )
+            self.name = f"{self.name}{self.id}" 
                 #latent_nodes.append(new_node)
             #self.__class__.instances.extend(latent_nodes)
             
@@ -214,10 +215,12 @@ class Connect:
     
     def transfers(self,name):
         parameters = self.parameters_mega_list
+        logging.error(f'The parameters for connection b/w {self.source.name} and {self.target.name} is {parameters}')
         linear_rate = parameters.get('linear-transfer-rate')
         if name == 'linear-transfer-forward' or name is None:    
             value = -linear_rate*self.source.value
         elif name == 'linear-transfer-backward':
+            logging.error(f'The linear rate is {linear_rate}')
             value = +linear_rate*self.target.value
         elif name == 'exponential-decay':
             pass
@@ -233,7 +236,7 @@ class Connect:
         other_helper = self.other_helper
         name_of_func_used = self.name_of_func
         if source.latent is False or target.latent is False:
-            logging.error(f'source is {source.name}, target is {target.name}')
+            #logging.error(f'source is {source.name}, target is {target.name}')
             self.connection_value = self.connections(name=name_of_func_used)
         # for the tranfer function I need to rewrite the last two lines, that if the nodes is multicompartments,
         # then I would use the transfer function and name of the function to update this.

@@ -99,12 +99,19 @@ def connect_multi_compartment(the_first_node,Node,type_of_transfer,parameters_in
             value_of_the_function = connect_two_nodes.transfers(name='linear-transfer-forward')
             setattr(connect_two_nodes,'connection_value',value_of_the_function)
             setattr(connect_two_nodes,'name_of_func','linear-transfer-forward')
-            
+            setattr(connect_two_nodes,'parameters_mega_list',new_parameters)
+            logging.error(
+                f'The attributed parameters of transfer between {connect_two_nodes.source.name} and {connect_two_nodes.target.name} are {connect_two_nodes.parameters_mega_list}'
+                          )
         for i in range(1,len(list_of_nodes)):    
             connect_two_nodes_back = Connect(list_of_nodes[i],list_of_nodes[i-1])
             value_of_the_function_back = connect_two_nodes.transfers(name='linear-transfer-backward')
             setattr(connect_two_nodes_back,'connection_value',value_of_the_function_back)
             setattr(connect_two_nodes_back,'name_of_func','linear-transfer-backward')
+            setattr(connect_two_nodes_back,'parameters_mega_list',new_parameters)
+            logging.error(
+                f'The attributed parameters of transfer between {connect_two_nodes_back.source.name} and {connect_two_nodes_back.target.name} are {connect_two_nodes_back.parameters_mega_list}'
+                          )
     elif type_of_transfer == 'exponential-decrease':
         raise NotImplemented
     elif type_of_transfer == 'exponential-increase':
