@@ -186,8 +186,8 @@ class Connect:
         elif source.type == 'susceptible' and target.type == 'exposed' and self.other_helper.type == 'free_virus':
             default_parameters = {
                 'number_of_compartments' : 10,
-                'rate_of_tranfer': 0.1,
-                'adsorption_rate' : 1e-10
+                'rate_of_tranfer': 1e10,
+                'adsorption_rate' : 1e-8
             }
             parameters = {**default_parameters, **parameters}
             if name == 'new-infection' or name is None:
@@ -195,6 +195,22 @@ class Connect:
                 rate_of_transfer = parameters['rate_of_tranfer']
                 adsorption_rate = parameters['adsorption_rate']
                 value = -adsorption_rate*source.value*self.other_helper.value
+            else:
+                raise NameError('wrong name of function')
+            logging.warning(f'The value is {value}')
+
+        elif source.type == 'exposed' and target.type == 'susceptible' and self.other_helper.type == 'free_virus':
+            default_parameters = {
+                'number_of_compartments' : 10,
+                'rate_of_tranfer': 1e10,
+                'adsorption_rate' : 1e-8
+            }
+            parameters = {**default_parameters, **parameters}
+            if name == 'new-infection' or name is None:
+                number_of_compartments = parameters['number_of_compartments']
+                rate_of_transfer = parameters['rate_of_tranfer']
+                adsorption_rate = parameters['adsorption_rate']
+                value = +adsorption_rate*target.value*self.other_helper.value
             else:
                 raise NameError('wrong name of function')
             logging.warning(f'The value is {value}')
@@ -215,12 +231,11 @@ class Connect:
     
     def transfers(self,name):
         parameters = self.parameters_mega_list
-        logging.error(f'The parameters for connection b/w {self.source.name} and {self.target.name} is {parameters}')
+        #logging.error(f'The parameters for connection b/w {self.source.name} and {self.target.name} is {parameters}')
         linear_rate = parameters.get('linear-transfer-rate')
         if name == 'linear-transfer-forward' or name is None:    
             value = -linear_rate*self.source.value
         elif name == 'linear-transfer-backward':
-            logging.error(f'The linear rate is {linear_rate}')
             value = +linear_rate*self.target.value
         elif name == 'exponential-decay':
             pass

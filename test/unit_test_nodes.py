@@ -47,6 +47,8 @@ connection4.connection_value = connection4.connections(name='infect-and-lysis')
 connection5 = Connect(ecoli,exposed,lambda_virus)
 connection5.connection_value = connection5.connections(name='new-infection')
 
+connection6 = Connect(exposed,ecoli,lambda_virus)
+connection6.connection_value = connection6.connections(name='new-infection')
 
 
 # Collect the values of all Node instances
@@ -57,55 +59,27 @@ values_array = np.array(node_values)
 initial_values = [node.value for node in Node.instances]
 
 # Time points
-time = np.arange(0, 5, 0.01)
+time = np.arange(0, 3, 0.01)
 dt = time[1] - time[0]
 
 
 
 solution = solve_network_euler(time,initial_values)
-print(solution[0,:])
 #print(f'Ecoli time series is {ecoli.time_series}')
 #print(f'Lambda time series is {lambda_virus.time_series}')
 plt.plot(time,solution[0,:],'g')
 plt.plot(time,solution[1,:],'b')
-plt.plot(time,solution[2,:],'r')
+plt.plot(time,solution[4,:],'r')
 plt.yscale('log')
 plt.show()
 
-print(solution[2,:])
-
+for node in Node.instances:
+    print(node.name)
 
 
   
 
 
-
-
-
-
-'''
-
-
-#Solving
-solution = solve_network(time,initial_values)
-
-
-for node in Node.instances:
-    for connect in node.connections.get(id(node), []):
-        #print(node.id -1)
-        print(f"the source id is {connect.source.id} and the target id is {connect.target.id} and the value of the function is {connect.connection_value}" )       
-
-#plotting
-
-
-plt.plot(time, solution[:, 0], 'g', label='ecoli(t)')
-plt.plot(time, solution[:, 1], 'b', label='lambda(t)')
-plt.plot(time, solution[:, 2], 'r', label='first exposed compartment (t)')
-plt.yscale('linear')
-plt.show()
-
-
-'''
 
 
 if __name__ == "__main__":
