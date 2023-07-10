@@ -215,6 +215,31 @@ class Connect:
                 raise NameError('wrong name of function')
             logging.warning(f'The value is {value}')
         
+        elif source.type == 'exposed' and target.type == 'free_virus':
+            default_parameters = {
+                'rate_of_tranfer': 1e1
+            }
+            parameters = {**default_parameters, **parameters}
+            if name == 'lysis' or name is None:
+                rate_of_transfer = parameters['rate_of_tranfer']
+                value = -rate_of_transfer*target.value
+            else:
+                raise NameError('wrong name of function')
+        
+        elif source.type == 'free_virus' and target.type == 'exposed':
+            default_parameters = {
+                'rate_of_tranfer': 1e1,
+                'burst_size' : 200
+            }
+            parameters = {**default_parameters, **parameters}
+            if name == 'lysis' or name is None:
+                rate_of_transfer = parameters['rate_of_tranfer']
+                burst_size = parameters['burst_size']
+                value = +burst_size*rate_of_transfer*target.value
+            else:
+                raise NameError('wrong name of function')
+    
+        
     
                 
                 

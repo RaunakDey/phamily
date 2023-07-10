@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 sys.path.append('./../phamily/')
 
 #More imports
-from utils_func import solve_network, connect_multi_compartment, solve_network_euler
+from utils_func import *
 from nodes import Node, Connect
 
 
@@ -27,22 +27,20 @@ exposed = Node('exposed','exposed-coli',multiple_compartments=True,latent=True,v
 connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
 
 
-    
+
 
     
 #Connect.create_connections()
 
-#connection1 = Connect(agar,ecoli)
-#connection1.connection_value = connection1.connections(name='type-I')
 
 connection2 = Connect(ecoli,parameters_mega_list={(ecoli.type,ecoli.type):{'growth_rate':5, 'linear_model_mult_constant': 5}})
 connection2.connection_value = connection2.connections(name = 'type-I' )
 
-connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-13}})
-connection3.connection_value = connection3.connections(name='infect-and-lysis' )
+#connection3 = Connect(ecoli,lambda_virus,parameters_mega_list={(ecoli.type,lambda_virus.type):{'adsorption_rate':1.4e-13}})
+#connection3.connection_value = connection3.connections(name='infect-and-lysis' )
 
-connection4 = Connect(lambda_virus,ecoli)
-connection4.connection_value = connection4.connections(name='infect-and-lysis')
+#connection4 = Connect(lambda_virus,ecoli)
+#connection4.connection_value = connection4.connections(name='infect-and-lysis')
 
 connection5 = Connect(ecoli,exposed,lambda_virus)
 connection5.connection_value = connection5.connections(name='new-infection')
@@ -50,6 +48,7 @@ connection5.connection_value = connection5.connections(name='new-infection')
 connection6 = Connect(exposed,ecoli,lambda_virus)
 connection6.connection_value = connection6.connections(name='new-infection')
 
+connect_lastcompartment_to_one(exposed,Node,lambda_virus,func_name='lysis')
 
 
 # Collect the values of all Node instances
@@ -58,6 +57,7 @@ values_array = np.array(node_values)
 
 # Initial values
 initial_values = [node.value for node in Node.instances]
+
 
 # Time points
 time = np.arange(0, 3, 0.01)
@@ -70,12 +70,14 @@ solution = solve_network_euler(time,initial_values)
 #print(f'Lambda time series is {lambda_virus.time_series}')
 plt.plot(time,solution[0,:],'g')
 plt.plot(time,solution[1,:],'b')
-plt.plot(time,solution[4,:],'r')
+plt.plot(time,solution[2,:],'r')
 plt.yscale('log')
 plt.show()
 
-for node in Node.instances:
-    print(node.name)
+
+# Time points
+time = np.arange(0, 3, 0.01)
+dt = time[1] - time[0]
 
 
   

@@ -118,9 +118,87 @@ def connect_multi_compartment(the_first_node,Node,type_of_transfer,parameters_in
         raise NotImplemented
     else:
         raise NotImplemented
-        
- 
-        
+
+
+
+## TO DO
+def connect_lastcompartment_to_one(the_first_node,Node,the_target_node,func_name,parameters_input_list = None):
+    if not the_first_node.multiple_compartments:
+        raise TypeError('wrong type of compartment, can not connect when there is only one compartment present.')
+    
+
+    default_parameters = {
+                'rate_of_tranfer': 1e1,
+                'burst_size' : 200
+            }
+    if parameters_input_list is None:
+        parameters_input_list = {}
+    new_parameters = {key: parameters_input_list.get(key, default_parameters[key]) for key in default_parameters}
+    
+
+    number_of_nodes = the_first_node.number_of_latent_variables
+    the_last_node = next(filter(lambda node: node.id == (the_first_node.id + the_first_node.number_of_latent_variables -1), Node.instances), None)
+    connection_last2target = Connect(the_last_node,the_target_node, parameters_mega_list=new_parameters )
+    value = connection_last2target.connections(name=func_name)
+    setattr(connection_last2target,'connection_value',value)
+    setattr(connection_last2target,'name_of_func',func_name)
+    setattr(connection_last2target,'parameters_mega_list',new_parameters)
+
+    connection_target2last = Connect(the_target_node,the_last_node,parameters_mega_list=new_parameters)
+    value = connection_target2last.connections(name=func_name)
+    setattr(connection_target2last,'connection_Value',value)
+    setattr(connection_target2last,'name_of_func',func_name)
+    setattr(connection_target2last,'parameters_mega_list',new_parameters)
+    
+
+
+def connect_2_multicompartments(first_node_one,first_node_two,type_of_transfer,parameters_input_list = None):
+    if first_node_one.multiple_compartments is False or first_node_two.multiple_compartments is False:
+        raise TypeError('can not connect single compartments, use connections method instead.')
+    if not first_node_one.number_of_latent_variables == first_node_two.number_of_latent_variables:
+        raise TypeError('unqual number of compartments. Cannot be connected.')
+    
+    #actual method
+    default_parameters = {
+            'linear-transfer-rate' : 10,
+        }
+    if parameters_input_list is None:
+        parameters_input_list = {}
+    new_parameters = {key: parameters_input_list.get(key, default_parameters[key]) for key in default_parameters}
+    node_one_list =[]
+    node_two_list = []
+    node_one_list.append(first_node_one)
+    node_two_list.append(first_node_two)
+
+    for node in Node.instances:
+        if node.id > first_node_one.id and node.id < first_node_one.id + first_node_one.number_of_latent_variables:
+            node_one_list.append(node)
+        elif node.id > first_node_two.id and node.id < first_node_two.id + first_node_two.number_of_latent_variables:
+            node_two_list.append(node)
+    if type_of_transfer == 'linear':
+        for i in range(0,first_node_one.number_of_latent_variables-1):
+            connect_fwd = Connect(node_one_list[i],node_two_list[i],parameters_mega_list=new_parameters)
+            value_of_the_function = connect_fwd.transfers(name='linear-transfer-forward')
+            setattr(connect_fwd,'connection_value',value_of_the_function)
+            setattr(connect_fwd,'name_of_func','linear-transfer-forward')
+            setattr(connect_fwd,'parameters_mega_list',new_parameters)
+
+            connect_bkw = Connect(node_two_list[i],node_one_list[i],parameters_mega_list=new_parameters)
+            value_of_the_function - connect_bkw.transfers(name='linear-transfer-backward')
+            setattr(connect_bkw,'connection_value',value_of_the_function)
+            setattr(connect_bkw,'name_of_func','linear-transfer-forward')
+            setattr(connect_bkw,'parameters_mega_list',new_parameters)
+    if type_of_transfer == 'exponential':
+        raise NameError('to be implemented later. Sorry')
+
+    # incomplete.
+
+def connect_one_to_multi():
+    raise NotImplemented
+
+def connect_multi_to_one():
+    raise NotImplemented
+
     
 
     
