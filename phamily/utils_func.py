@@ -1,6 +1,6 @@
 import logging
 import sys
-from scipy.integrate import odeint
+from scipy.integrate import odeint, solve_ivp
 import numpy as np
 from nodes import Node, Connect
 
@@ -56,15 +56,23 @@ def solve_network(
     def system(y, t):
         dydt = np.zeros(len(y))
         for node in Node.instances:
+            setattr(node,'value',y[node.id-1])
             for connect in node.connections.get(id(node), []):
-                dydt[node.id-1] += connect.connection_value
+                connect.update_connection_value()
+                dydt[node.id-1] += connect.connection_value if isinstance(connect.connection_value,(float,int)) is True else connect.connection_value[0]
                 logging.debug(f" The node ids are {node.id - 1}")
                 # I am deleting this line, so 
                 #dydt[connect.target.id-1] += connect.connection_value ## this bit is wrong???
-            node.value +=  dydt[node.id-1] * dt
+            # this way I keep on updating the node values.
+            
+            logging.error(f'value of node {node.name} is {node.value}')
         return dydt
-    solution = odeint(system, initial_values, t)
+    
+
+    solution = odeint(system,initial_values,t)
     return solution
+
+
 
 
 
