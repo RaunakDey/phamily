@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.ERROR)
 #agar = Node('nutrients', 'agar', value=12e5)
 ecoli = Node('susceptible', 'ecoli', value=1e4)
 lambda_virus = Node('free_virus','lambda',value= 2e3)
-exposed = Node('exposed','exposed-coli',multiple_compartments=True,latent=True,value = 0,number_of_latent_variables=3)
+exposed = Node('exposed','exposed-coli',multiple_compartments=True,latent=True,value = 0,number_of_latent_variables=5)
 connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
 
 
