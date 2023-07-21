@@ -25,13 +25,13 @@ def solve_network_euler(
             for connect in node.connections.get(id(node), []): 
                 ## I need to update these connections somehow???
                 connect.update_connection_value()
-                logging.error(f'Between {connect.source.name} and {connect.target.name} the value is {connect.connection_value}, where source value is {connect.source.value} and target value is {connect.target.value}')
+                #logging.error(f'Between {connect.source.name} and {connect.target.name} the value of function {connect.name_of_func} is {connect.connection_value}, where source value is {connect.source.value} and target value is {connect.target.value}')
                 dydt[node.id-1] += connect.connection_value if isinstance(connect.connection_value,(float,int)) is True else connect.connection_value[0]
                 logging.debug(f" The node ids are {node.id - 1}")
                 logging.debug(f'the dy is {dydt[node.id-1]*dt} between source {connect.source.name} with id {connect.source.id} and target {connect.target.name}, id {connect.target.id}')
             node.value +=  dydt[node.id-1] * dt
             solution[node.id-1,count+1] = node.value
-            logging.error(f'The node {node.name} has value {node.value}')
+            #logging.error(f'The node {node.name} has value {node.value}')
             #node.time_series.append(node.value)
             logging.debug(f'The time series of {node.name} is {node.time_series}')
 
@@ -65,11 +65,12 @@ def solve_network(
                 #dydt[connect.target.id-1] += connect.connection_value ## this bit is wrong???
             # this way I keep on updating the node values.
             
-            logging.error(f'value of node {node.name} is {node.value}')
+            #logging.error(f'value of node {node.name} is {node.value}')
         return dydt
     
 
-    solution = odeint(system,initial_values,t)
+    solution = odeint(system,initial_values,t,mu=0,ml=0,rtol=1e-10,atol=1e-10)
+    #solution = solve_ivp(system,t_span=(t[0],t[-1]),y0=initial_values)
     return solution
 
 
@@ -207,6 +208,25 @@ def connect_one_to_multi():
 def connect_multi_to_one():
     raise NotImplemented
 
+#### properties of dynamical system:
+def find_equilibirum_points(Node,Connect):
+    '''
+    Finds fixed points given the nodes and connections, with stabibility analysis.
+    '''
+    raise NotImplemented
+
+def bifurcation_finder(Node,Connect):
+    '''
+    Finds hyper-parameter where you can change in stability properties.
+    '''
+    raise NotImplemented
+
+def stable_parameters_finder(Node,Connect):
+    '''
+    Find zones of stable parameter sets, where the population does not crash--
+    Either becomes stationary, or becomes periodic.
+    '''
+    raise NotImplemented
     
 
     

@@ -142,9 +142,9 @@ class Connect:
                 growth_rate = parameters['growth_rate']
                 value = growth_rate*source.value
             elif name == 'logistic-growth':
-                carrying_cap = parameters['carring_cap']
+                carrying_cap = parameters['carrying_cap']
                 growth_rate = parameters['growth_rate']
-                value = growth_rate*source.value*(1 - (source.value/carrying_cap))
+                value = growth_rate*source.value*(carrying_cap - source.value)/carrying_cap
             elif name == 'type-I':
                 linear_model_mult_constant = parameters['linear_model_mult_constant']
                 value = linear_model_mult_constant * self.source.value
@@ -249,9 +249,11 @@ class Connect:
         #            name, source.type, target.type, parameters, value
         #        )
         #    )
-        return value
+        
         self.connection_value = value
         self.name_of_func = name
+        return value
+        #setattr(self,'name_of_func',name)
     
     
     def transfers(self,name):
@@ -266,9 +268,10 @@ class Connect:
             pass
         else:
             raise NameError('Undefined function. Please check the name of the function used.')
-        return value
         self.connection_value = value
         self.name_of_func = name
+        return value
+        
     
     def update_connection_value(self):
         source = self.source
