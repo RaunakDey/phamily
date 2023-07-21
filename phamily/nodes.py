@@ -181,6 +181,7 @@ class Connect:
                 burst_size = parameters['burst_size']
                 value = burst_size*adsorption_rate*source.value*target.value
             if name == 'adsorption':
+                adsorption_rate = parameters['adsorption_rate']
                 value = -source.value * target.value * adsorption_rate
             else:
                 raise NameError('wrong name of function')
@@ -239,7 +240,8 @@ class Connect:
         elif source.type == 'free_virus' and target.type == 'exposed':
             default_parameters = {
                 'rate_of_tranfer': 1e1,
-                'burst_size' : 200
+                'burst_size' : 200,
+                'adsorption_rate' : 1.4e-13
             }
             parameters = {**default_parameters, **parameters}
             if name == 'lysis' or name is None:

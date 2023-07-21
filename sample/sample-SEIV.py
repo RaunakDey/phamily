@@ -46,6 +46,7 @@ connection3.connection_value = connection3.connections(name='new-infection')
 
 #Transition across exposed compartments
 connect_multi_compartment(exposed,Node,type_of_transfer='linear',parameters_input_list = None)
+### Debug this!!!!
 connect_lastcompartment_to_one(exposed,Node,lambda_virus,func_name='lysis')
 
 # Virus getting adsorped to all types of hosts
@@ -70,9 +71,9 @@ solution = solve_network_euler(time,initial_values)
 
 
 
-plt.plot(time,solution[:,0],'g')
-plt.plot(time,solution[:,1],'b')
-plt.plot(time,solution[:,4],'r')
+plt.plot(time,solution[0,:],'g')
+plt.plot(time,solution[1,:],'b')
+plt.plot(time,solution[4,:],'r')
 plt.yscale('log')
 plt.show()
 
