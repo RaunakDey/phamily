@@ -95,7 +95,7 @@ class Connect:
         
         if source.type == 'nutrients' and target.type == 'susceptible':
             default_parameters = {
-                'linear_model_mult_constant': 0.5,
+                'linear_model_mult_constant': 5,
                 'half_conc': 1,
                 'monod_mult_constant': 0.1
             }
@@ -105,14 +105,28 @@ class Connect:
                 value = 1
             elif name == 'type-I' or name is None:
                 linear_model_mult_constant = parameters['linear_model_mult_constant']
-                value = linear_model_mult_constant * self.source.value
+                value = -linear_model_mult_constant * self.source.value*self.target.value
             elif name == 'monod':
                 half_conc = parameters['half_conc']
                 monod_mult_constant = parameters['monod_mult_constant']
                 value = monod_mult_constant * self.source.value / (half_conc + self.source.value)
             else:
                 raise NameError('wrong name of function')
-            
+        
+        elif source.type == 'susceptible' and target.type == 'nutrients':
+            default_parameters = {
+                'linear_model_mult_constant': 5,
+                'half_conc': 1,
+                'monod_mult_constant': 0.1,
+                'effectiveness': 1
+            }
+            parameters = {**default_parameters, **parameters}
+            if name == 'type-I' or name is None:
+                linear_model_mult_constant = parameters['linear_model_mult_constant']
+                effectiveness = parameters['effectiveness']
+                value = effectiveness*linear_model_mult_constant * self.source.value*self.target.value
+            else:
+                raise NameError('wrong name of function.')
         
         elif source.type == 'nutrients' and target.type == 'outside':
             default_parameters = {'inflow_rate' : 1,'outflow_rate' : 1,'flux' : 1}
@@ -173,14 +187,14 @@ class Connect:
         elif source.type == 'free_virus' and target.type == 'susceptible':
             default_parameters = {
                 'adsorption_rate' : 1.4e-13,
-                'burst_size' : 350
+                'burst_size' : 20
             } 
             parameters = {**default_parameters, **parameters}
             if name == 'infect-and-lysis' or name is None:
                 adsorption_rate = parameters['adsorption_rate']
                 burst_size = parameters['burst_size']
                 value = burst_size*adsorption_rate*source.value*target.value
-            if name == 'adsorption':
+            elif name == 'adsorption':
                 adsorption_rate = parameters['adsorption_rate']
                 value = -source.value * target.value * adsorption_rate
             else:
@@ -240,7 +254,7 @@ class Connect:
         elif source.type == 'free_virus' and target.type == 'exposed':
             default_parameters = {
                 'rate_of_tranfer': 5,
-                'burst_size' : 200,
+                'burst_size' : 20,
                 'adsorption_rate' : 1.4e-13
             }
             parameters = {**default_parameters, **parameters}
