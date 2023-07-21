@@ -156,7 +156,7 @@ def connect_lastcompartment_to_one(the_first_node,Node,the_target_node,func_name
 
     connection_target2last = Connect(the_target_node,the_last_node,parameters_mega_list=new_parameters)
     value = connection_target2last.connections(name=func_name)
-    setattr(connection_target2last,'connection_Value',value)
+    setattr(connection_target2last,'connection_value',value)
     setattr(connection_target2last,'name_of_func',func_name)
     setattr(connection_target2last,'parameters_mega_list',new_parameters)
     
@@ -227,7 +227,7 @@ def connect_one_to_multi(starting_node,first_of_multi_node,Node,parameters_input
         setattr(connecting_one_multi,'connection_value',value)
         setattr(connecting_one_multi,'name_of_func',func_name)
         setattr(connecting_one_multi,'parameters_mega_list',new_parameters)
-        
+
 
 def connect_multi_to_one():
     raise NotImplemented

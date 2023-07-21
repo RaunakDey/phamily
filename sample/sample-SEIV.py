@@ -62,14 +62,14 @@ values_array = np.array(node_values)
 initial_values = [node.value for node in Node.instances]
 
 # Time points
-time = np.arange(0, 2, 0.01)
+time = np.arange(0, 3, 0.01)
 dt = time[1] - time[0]
 
 
 
 solution = solve_network_euler(time,initial_values)
 
-
+print(solution)
 
 plt.plot(time,solution[0,:],'g')
 plt.plot(time,solution[1,:],'b')

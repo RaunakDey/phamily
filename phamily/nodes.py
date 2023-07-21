@@ -189,8 +189,8 @@ class Connect:
         elif source.type == 'susceptible' and target.type == 'exposed' and self.other_helper.type == 'free_virus':
             default_parameters = {
                 'number_of_compartments' : 10,
-                'rate_of_tranfer': 1e10,
-                'adsorption_rate' : 1e-8
+                'rate_of_tranfer': 5,
+                'adsorption_rate' : 1.4e-13
             }
             parameters = {**default_parameters, **parameters}
             if name == 'new-infection' or name is None:
@@ -207,8 +207,8 @@ class Connect:
         elif source.type == 'exposed' and target.type == 'susceptible' and self.other_helper.type == 'free_virus':
             default_parameters = {
                 'number_of_compartments' : 10,
-                'rate_of_tranfer': 1e10,
-                'adsorption_rate' : 1e-8
+                'rate_of_tranfer': 5,
+                'adsorption_rate' : 1.4e-13
             }
             parameters = {**default_parameters, **parameters}
             if name == 'new-infection' or name is None:
@@ -225,7 +225,7 @@ class Connect:
 
         elif source.type == 'exposed' and target.type == 'free_virus':
             default_parameters = {
-                'rate_of_tranfer': 1e1
+                'rate_of_tranfer': 5
             }
             parameters = {**default_parameters, **parameters}
             if name == 'lysis' or name is None:
@@ -239,7 +239,7 @@ class Connect:
 
         elif source.type == 'free_virus' and target.type == 'exposed':
             default_parameters = {
-                'rate_of_tranfer': 1e1,
+                'rate_of_tranfer': 5,
                 'burst_size' : 200,
                 'adsorption_rate' : 1.4e-13
             }
@@ -248,7 +248,7 @@ class Connect:
                 rate_of_transfer = parameters['rate_of_tranfer']
                 burst_size = parameters['burst_size']
                 value = +burst_size*rate_of_transfer*target.value
-            if name == 'adsorption':
+            elif name == 'adsorption':
                 adsorption_rate = parameters['adsorption_rate']
                 value = - source.value * adsorption_rate * target.value
             else:
