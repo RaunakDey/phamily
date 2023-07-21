@@ -180,6 +180,8 @@ class Connect:
                 adsorption_rate = parameters['adsorption_rate']
                 burst_size = parameters['burst_size']
                 value = burst_size*adsorption_rate*source.value*target.value
+            if name == 'adsorption':
+                value = -source.value * target.value * adsorption_rate
             else:
                 raise NameError('wrong name of function')
             
@@ -199,6 +201,8 @@ class Connect:
                 raise NameError('wrong name of function')
             logging.warning(f'The value is {value}')
 
+
+
         elif source.type == 'exposed' and target.type == 'susceptible' and self.other_helper.type == 'free_virus':
             default_parameters = {
                 'number_of_compartments' : 10,
@@ -215,6 +219,9 @@ class Connect:
                 raise NameError('wrong name of function')
             logging.warning(f'The value is {value}')
         
+
+
+
         elif source.type == 'exposed' and target.type == 'free_virus':
             default_parameters = {
                 'rate_of_tranfer': 1e1
@@ -222,10 +229,13 @@ class Connect:
             parameters = {**default_parameters, **parameters}
             if name == 'lysis' or name is None:
                 rate_of_transfer = parameters['rate_of_tranfer']
-                value = -rate_of_transfer*target.value
+                value = -rate_of_transfer*source.value
             else:
                 raise NameError('wrong name of function')
         
+
+
+
         elif source.type == 'free_virus' and target.type == 'exposed':
             default_parameters = {
                 'rate_of_tranfer': 1e1,
@@ -236,6 +246,9 @@ class Connect:
                 rate_of_transfer = parameters['rate_of_tranfer']
                 burst_size = parameters['burst_size']
                 value = +burst_size*rate_of_transfer*target.value
+            if name == 'adsorption':
+                adsorption_rate = parameters['adsorption_rate']
+                value = - source.value * adsorption_rate * target.value
             else:
                 raise NameError('wrong name of function')
     

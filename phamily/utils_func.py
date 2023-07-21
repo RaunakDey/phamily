@@ -132,6 +132,7 @@ def connect_multi_compartment(the_first_node,Node,type_of_transfer,parameters_in
 
 ## TO DO
 def connect_lastcompartment_to_one(the_first_node,Node,the_target_node,func_name,parameters_input_list = None):
+    ### Both way
     if not the_first_node.multiple_compartments:
         raise TypeError('wrong type of compartment, can not connect when there is only one compartment present.')
     
@@ -202,8 +203,31 @@ def connect_2_multicompartments(first_node_one,first_node_two,type_of_transfer,p
 
     # incomplete.
 
-def connect_one_to_multi():
-    raise NotImplemented
+def connect_one_to_multi(starting_node,first_of_multi_node,Node,parameters_input_list,func_name):
+    number_of_nodes = first_of_multi_node.number_of_latent_variables
+    list_of_nodes = []
+    list_of_nodes.append(first_of_multi_node)
+    for node in Node.instances:
+        if node.id > first_of_multi_node.id and node.id < first_of_multi_node.id + first_of_multi_node.number_of_latent_variables:
+            list_of_nodes.append(node)
+        logging.warning(f'The nodes are list {node.name}')
+
+    default_parameters = {
+                'rate_of_tranfer': 1e1,
+                'burst_size' : 200
+            }
+    if parameters_input_list is None:
+        parameters_input_list = {}
+    new_parameters = {key: parameters_input_list.get(key, default_parameters[key]) for key in default_parameters}
+    
+
+    for i in range(0,number_of_nodes):
+        connecting_one_multi = Connect(starting_node,list_of_nodes[i],parameters_mega_list=new_parameters)
+        value = connecting_one_multi.connections(name=func_name)
+        setattr(connecting_one_multi,'connection_value',value)
+        setattr(connecting_one_multi,'name_of_func',func_name)
+        setattr(connecting_one_multi,'parameters_mega_list',new_parameters)
+        
 
 def connect_multi_to_one():
     raise NotImplemented
