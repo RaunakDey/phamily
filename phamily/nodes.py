@@ -58,6 +58,14 @@ class Node:
     def __str__(self):
         return f"Node(type={self.type}, name={self.name}, value = {self.value}, latent = {self.latent}, id = {self.id})"
 
+    def reset_everything(self):
+        self.__class__.instances = []
+
+    @classmethod
+    def reset_instances(cls):
+        cls.instances = []
+
+    
 
 @dataclass
 class Connect:
@@ -317,6 +325,12 @@ class Connect:
         else:
             raise TypeError
 
+    def reset_everything(self):
+        self.__class__.instances = []
+
+    @classmethod
+    def reset_instances(cls):
+        cls.instances = []
 
     # not tested.
     @classmethod
