@@ -31,6 +31,8 @@ time = np.arange(0, 20, 0.01)
 dt = time[1] - time[0]
 
 solution = solve_network_euler(time,initial_values)
+plot_node_time_series_euler(solution,Node,time,semilog=False)
+
 
 ```
 which results in the solution visualized below.
