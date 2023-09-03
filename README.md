@@ -33,6 +33,9 @@ dt = time[1] - time[0]
 solution = solve_network_euler(time,initial_values)
 
 ```
+which results in the solution visualized below.
+
+<img width="389" alt="image" src="https://github.com/RaunakDey/phamily/assets/39820997/44a2f67e-6d66-46c5-bdd6-4d862e22009d">
 
 
 
