@@ -1,4 +1,4 @@
-<img width="719" alt="Screenshot 2023-11-02 at 12 26 10 AM" src="https://github.com/RaunakDey/phamily/assets/39820997/604edc2a-8750-4086-b4f2-b5a031176691">
+<img width="70" alt="Screenshot 2023-11-02 at 12 26 10 AM" src="https://github.com/RaunakDey/phamily/assets/39820997/604edc2a-8750-4086-b4f2-b5a031176691">
 
 
 # PHAMILY -- network model for PHAge MIcrobe LYsis LYsogeny
