@@ -1,3 +1,6 @@
+<img width="719" alt="Screenshot 2023-11-02 at 12 26 10 AM" src="https://github.com/RaunakDey/phamily/assets/39820997/604edc2a-8750-4086-b4f2-b5a031176691">
+
+
 # PHAMILY -- network model for PHAge MIcrobe LYsis LYsogeny
 WARNING: UNDER DEVELOPMENT NOW -- minimal usage should be ready by end of July.
 A large scale latent variable compartmental model for simulating abundance/population time series of interacting phages and microbes that undergoes lysis or lysogeny in presence of the phages, depending on other biotic, abiotic or environmental factors. PHAMILY is an extension of an older modeling toolkit VIMIMO (Virus Microbe Modeller) -- which is archived at https://github.com/RaunakDey/VIMIMO-Virus-Microbe-modeller (will be made public in July).
